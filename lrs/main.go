@@ -42,7 +42,6 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 func write(w http.ResponseWriter, status int, body interface{}) {
 	marshalled, _ := json.Marshal(body)
-	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write(marshalled)
 }

@@ -1,7 +1,7 @@
 package structs
 
-//Progress struct contains the progress made on a course
-type Progress struct {
+//Course struct contains the progress made on a course
+type Course struct {
 	CourseCode string  `json:"coursecode"`
 	CourseName string  `json:"courseName"`
 	Version    string  `json:"version"`
