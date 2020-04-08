@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"lpts/calculate"
 	"lpts/helpers"
 	"lpts/structs"
 )
@@ -56,7 +57,6 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(string(body))
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
-	w.Write(body)
+	message := calculate.IDCalculate(body)
+	helpers.Write(w, 200, message)
 }
