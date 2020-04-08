@@ -2,14 +2,11 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
 	"lpts/calculate"
 	"lpts/helpers"
-	"lpts/structs"
 )
 
 func main() {
@@ -31,7 +28,7 @@ func authorize(h func(w http.ResponseWriter, r *http.Request)) http.Handler {
 }
 
 // router figures out what kind of request was made
-// Currently there is only one kind: Design Case 1 requests
+// Currently there is only one kind: handleAll, Design Case 1 requests
 func router(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case true:
@@ -39,31 +36,24 @@ func router(w http.ResponseWriter, r *http.Request) {
 	case false:
 		handleOne(w, r)
 	default:
-		helpers.Write(w, 400, structs.Error{Error: "Bad Request"})
+		helpers.Error(w, 400, "Bad Request")
 	}
 }
 
 // handleAll handles requests for progress on all courses
 // Design Case 1
 func handleAll(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://localhost:8100/" + r.URL.Path[1:])
+
+	body, err := helpers.Get("http://localhost:8100/" + r.URL.Path[1:])
 	if err != nil {
-		fmt.Println("handleProfile: Error making request!")
+		log.Println("handleAll: failure making get request: " + err.Error())
+		helpers.Error(w, 404, "LRS could not be reached")
 		return
 	}
 
-	defer resp.Body.Close()
+	progress := calculate.All(body)
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading body!")
-		return
-	}
-
-	fmt.Println(string(body))
-
-	message := calculate.IDCalculate(body)
-	helpers.Write(w, 200, message)
+	helpers.Write(w, 200, progress)
 }
 
 // handleOne handles requests for progress on all courses

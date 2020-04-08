@@ -8,13 +8,13 @@ import (
 	"lpts/structs"
 )
 
-//IDCalculate calculates progress for Profile ID request
-func IDCalculate(body []byte) structs.AllMessage {
+//All calculates progress for all courses
+func All(body []byte) structs.AllMessage {
 
 	var data map[string]interface{}
 
 	if err := json.Unmarshal(body, &data); err != nil {
-		log.Println("IDCalculate: unmarshalling failed")
+		log.Println("CalculateAll: unmarshalling failed")
 	}
 
 	////////Hard coded return
