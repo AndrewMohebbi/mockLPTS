@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"lrs/data"
 )
@@ -16,7 +17,6 @@ func main() {
 
 	http.HandleFunc("/", router)
 	http.ListenAndServe(":8100", nil)
-
 }
 
 func router(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +29,8 @@ func router(w http.ResponseWriter, r *http.Request) {
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path[1:] {
+	name := strings.ToLower(r.URL.Path[1:])
+	switch name {
 	case "sheila":
 		write(w, 200, sheila)
 	case "george":
@@ -37,7 +38,6 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	default:
 		write(w, 404, "Name doesn't exist!")
 	}
-	return
 }
 
 func write(w http.ResponseWriter, status int, body interface{}) {

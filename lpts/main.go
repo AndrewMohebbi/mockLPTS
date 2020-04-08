@@ -2,7 +2,8 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -25,7 +26,7 @@ var andyProgress = []structs.Progress{
 var andy = structs.IDMessage{CourseProgress: andyProgress}
 
 func main() {
-	log.Println("LPTS started!")
+	log.Println("LPTS started! Serving on :8000")
 
 	http.HandleFunc("/", router)
 	http.ListenAndServe(":8000", nil)
@@ -41,8 +42,21 @@ func router(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleProfile(w http.ResponseWriter, r *http.Request) {
-	marshalled, _ := json.Marshal(andy)
+	resp, err := http.Get("http://localhost:8100/" + r.URL.Path[1:])
+	if err != nil {
+		fmt.Println("Error making request!")
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading body!")
+	}
+
+	fmt.Println(string(body))
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(200)
-	w.Write(marshalled)
+	w.Write(body)
 }

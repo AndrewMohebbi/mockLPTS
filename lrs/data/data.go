@@ -10,7 +10,6 @@ func HardCoded() (structs.Message, structs.Message) {
 }
 
 // Hard coded data
-
 var sheilaEvents1 = []structs.Event{
 	structs.Event{Section: 1, Completed: true},
 	structs.Event{Section: 2, Completed: true},
@@ -38,7 +37,7 @@ var sheilaCourses = []structs.Course{
 	},
 }
 
-var sheila = structs.Message{Name: "Sheila", Courses: sheilaCourses}
+var sheila = structs.Message{ProfileID: "Sheila", Courses: sheilaCourses}
 
 var georgeEvents1 = []structs.Event{
 	structs.Event{Section: 1, Completed: true},
@@ -72,4 +71,4 @@ var georgeCourses = []structs.Course{
 	},
 }
 
-var george = structs.Message{Name: "George", Courses: georgeCourses}
+var george = structs.Message{ProfileID: "George", Courses: georgeCourses}
