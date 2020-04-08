@@ -7,7 +7,22 @@ import (
 	"net/http"
 
 	"lpts/helpers"
+	"lpts/structs"
 )
+
+// Hard-code some data
+var andyProgress = []structs.Progress{
+	structs.Progress{
+		CourseCode: "gettingstarted", CourseName: "MATLAB Onramp",
+		Version: "R2019b", Language: "en", Percentage: 6.2,
+	},
+	structs.Progress{
+		CourseCode: "mlpr", CourseName: "MATLAB Programming Techniques",
+		Version: "R2019b", Language: "en", Percentage: 11.7,
+	},
+}
+
+var andy = structs.IDMessage{CourseProgress: andyProgress}
 
 func main() {
 	log.Println("LPTS started!")
@@ -26,8 +41,8 @@ func router(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleProfile(w http.ResponseWriter, r *http.Request) {
-	marshalled, _ := json.Marshal("Here you go!")
+	marshalled, _ := json.Marshal(andy)
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(status)
+	w.WriteHeader(200)
 	w.Write(marshalled)
 }
