@@ -12,19 +12,17 @@ import (
 func main() {
 	log.Println("LPTS started! Serving on :8000")
 
-	http.Handle("/", authorize(router))
+	http.HandleFunc("/", authorize(router))
 	http.ListenAndServe(":8000", nil)
 }
 
 // authorize is a handler wrapper that handles authorization
-func authorize(h func(w http.ResponseWriter, r *http.Request)) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+func authorize(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// Add authorization stuff here
 
-		handler := http.HandlerFunc(h)
-		handler.ServeHTTP(w, r)
-	})
+		h(w, r)
+	}
 }
 
 // router figures out what kind of request was made
@@ -59,7 +57,7 @@ func handleAll(w http.ResponseWriter, r *http.Request) {
 	helpers.Write(w, 200, progress)
 }
 
-// handleOne handles requests for progress on all courses
+// handleOne handles requests for progress on a single course
 // Design Case 2
 func handleOne(w http.ResponseWriter, r *http.Request) {
 

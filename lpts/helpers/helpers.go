@@ -3,18 +3,19 @@ package helpers
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
-	"lpts/structs"
 	"net/http"
 	"time"
+
+	"lpts/structs"
 )
 
 // Write is an http.ResponseWriter helper
 func Write(w http.ResponseWriter, status int, body interface{}) error {
 	marshalled, err := json.Marshal(body)
 	if err != nil {
-		return errors.New("helpers/write: failed to marshall: " + err.Error())
+		return fmt.Errorf("helpers/write failed to marshall: %v", err)
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -35,19 +36,19 @@ func Get(url string) ([]byte, error) {
 
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, errors.New("helpers/get: request failed to build: " + err.Error())
+		return nil, fmt.Errorf("helpers/get request failed to build: %v", err)
 	}
 
 	resp, err := client.Do(request)
 	if err != nil {
-		return nil, errors.New("helpers/get: error making request: " + err.Error())
+		return nil, fmt.Errorf("helpers/get error making request:  %v", err)
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.New("helpers/get: error reading body: " + err.Error())
+		return nil, fmt.Errorf("helpers/get error reading body:   %v", err)
 	}
 
 	return body, nil

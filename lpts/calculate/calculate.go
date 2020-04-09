@@ -3,7 +3,7 @@ package calculate
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 
 	"lpts/structs"
 )
@@ -27,9 +27,10 @@ func All(body []byte) (structs.AllMessage, error) {
 	}{}
 
 	if err := json.Unmarshal(body, &data); err != nil {
-		return structs.AllMessage{}, errors.New("calculate/all: unmarshalling failed: " + err.Error())
+		return structs.AllMessage{}, fmt.Errorf("calculate/all unmarshalling failed: %v", err)
 	}
 
+	// Loop through data and calculate progress for each course
 	var courses []structs.Course
 	for _, c := range data.Courses {
 		var completed int
