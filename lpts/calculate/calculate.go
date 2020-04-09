@@ -8,28 +8,48 @@ import (
 	"lpts/structs"
 )
 
-//All calculates progress for all courses
+// All calculates progress for all courses
 func All(body []byte) structs.AllMessage {
 
-	var data map[string]interface{}
+	type message struct {
+		ProfileID string
+		Courses   []struct {
+			CourseCode    string
+			CourseName    string
+			Version       string
+			Language      string
+			TotalSections int
+			Events        []struct {
+				Section   int
+				Completed bool
+			}
+		}
+	}
+
+	data := message{}
 
 	if err := json.Unmarshal(body, &data); err != nil {
 		log.Println("CalculateAll: unmarshalling failed")
+		return structs.AllMessage{}
 	}
 
-	////////Hard coded return
-	var hardProgress = []structs.Course{
-		structs.Course{
-			CourseCode: "gettingstarted", CourseName: "MATLAB Onramp",
-			Version: "R2019b", Language: "en", Percentage: 6.2,
-		},
-		structs.Course{
-			CourseCode: "mlpr", CourseName: "MATLAB Programming Techniques",
-			Version: "R2019b", Language: "en", Percentage: 11.7,
-		},
+	var courses []structs.Course
+	for _, c := range data.Courses {
+		var completed int
+		for _, e := range c.Events {
+			if e.Completed == true {
+				completed++
+			}
+		}
+		percent := float64(completed) / float64(c.TotalSections) * 100
+		course := structs.Course{
+			CourseCode: c.CourseCode, CourseName: c.CourseName,
+			Version: c.Version, Language: c.Language, Percentage: percent,
+		}
+		courses = append(courses, course)
 	}
 
-	var hard = structs.AllMessage{CourseProgress: hardProgress}
+	progress := structs.AllMessage{CourseProgress: courses}
 
-	return hard
+	return progress
 }

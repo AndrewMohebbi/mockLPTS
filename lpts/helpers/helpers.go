@@ -24,7 +24,7 @@ func Write(w http.ResponseWriter, status int, body interface{}) error {
 	return returnErr
 }
 
-//Error is same as Write, but for errors
+// Error is the same as Write, but for errors
 func Error(w http.ResponseWriter, status int, body string) error {
 	return Write(w, status, structs.Error{Error: body})
 }
