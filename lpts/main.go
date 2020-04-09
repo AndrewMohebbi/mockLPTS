@@ -46,12 +46,15 @@ func handleAll(w http.ResponseWriter, r *http.Request) {
 
 	body, err := helpers.Get("http://localhost:8100/" + r.URL.Path[1:])
 	if err != nil {
-		log.Println("handleAll: failure making get request: " + err.Error())
 		helpers.Error(w, 404, "LRS could not be reached")
 		return
 	}
 
-	progress := calculate.All(body)
+	progress, err := calculate.All(body)
+	if err != nil {
+		helpers.Error(w, 404, "Bad response from LRS")
+		return
+	}
 
 	helpers.Write(w, 200, progress)
 }

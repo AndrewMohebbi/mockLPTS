@@ -3,15 +3,15 @@ package calculate
 
 import (
 	"encoding/json"
-	"log"
+	"errors"
 
 	"lpts/structs"
 )
 
 // All calculates progress for all courses
-func All(body []byte) structs.AllMessage {
+func All(body []byte) (structs.AllMessage, error) {
 
-	type message struct {
+	data := struct {
 		ProfileID string
 		Courses   []struct {
 			CourseCode    string
@@ -24,13 +24,10 @@ func All(body []byte) structs.AllMessage {
 				Completed bool
 			}
 		}
-	}
-
-	data := message{}
+	}{}
 
 	if err := json.Unmarshal(body, &data); err != nil {
-		log.Println("CalculateAll: unmarshalling failed")
-		return structs.AllMessage{}
+		return structs.AllMessage{}, errors.New("calculate/all: unmarshalling failed: " + err.Error())
 	}
 
 	var courses []structs.Course
@@ -51,5 +48,5 @@ func All(body []byte) structs.AllMessage {
 
 	progress := structs.AllMessage{CourseProgress: courses}
 
-	return progress
+	return progress, nil
 }

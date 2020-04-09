@@ -14,7 +14,7 @@ import (
 func Write(w http.ResponseWriter, status int, body interface{}) error {
 	marshalled, err := json.Marshal(body)
 	if err != nil {
-		return errors.New("Write: failed to marshall: " + err.Error())
+		return errors.New("helpers/write: failed to marshall: " + err.Error())
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -35,19 +35,19 @@ func Get(url string) ([]byte, error) {
 
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, errors.New("helpers.Get: request failed to build: " + err.Error())
+		return nil, errors.New("helpers/get: request failed to build: " + err.Error())
 	}
 
 	resp, err := client.Do(request)
 	if err != nil {
-		return nil, errors.New("helpers.Get: error making request: " + err.Error())
+		return nil, errors.New("helpers/get: error making request: " + err.Error())
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.New("helpers.Get: error reading body: " + err.Error())
+		return nil, errors.New("helpers/get: error reading body: " + err.Error())
 	}
 
 	return body, nil
