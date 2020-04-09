@@ -12,14 +12,14 @@ import (
 func main() {
 	log.Println("LPTS started! Serving on :8000")
 
-	http.HandleFunc("/", authorize(router))
+	http.HandleFunc("/", authenticate(router))
 	http.ListenAndServe(":8000", nil)
 }
 
-// authorize is a handler wrapper that handles authorization
-func authorize(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
+// authenticate is a handler wrapper that handles authentication
+func authenticate(h func(w http.ResponseWriter, r *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Add authorization stuff here
+		// To Do: add authentication logic
 
 		h(w, r)
 	}
@@ -42,18 +42,23 @@ func router(w http.ResponseWriter, r *http.Request) {
 // Design Case 1
 func handleAll(w http.ResponseWriter, r *http.Request) {
 
+	// Get statements from LRS
 	body, err := helpers.Get("http://localhost:8100/" + r.URL.Path[1:])
 	if err != nil {
 		helpers.Error(w, 404, "LRS could not be reached")
 		return
 	}
 
+	// To Do: Get enrollments from Training Auth Service
+
+	// To Do: Get courses from MLA Server
+
+	// Calculate and send progress
 	progress, err := calculate.All(body)
 	if err != nil {
 		helpers.Error(w, 404, "Bad response from LRS")
 		return
 	}
-
 	helpers.Write(w, 200, progress)
 }
 
